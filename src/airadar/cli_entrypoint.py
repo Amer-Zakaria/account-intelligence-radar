@@ -14,15 +14,27 @@ from .errors import (
     NoSerpResultsError,
     UpstreamApiError,
 )
-from .extraction_firecrawl import company_extract_prompt, company_extract_schema, run_extract
+from .extraction_firecrawl import (
+    company_extract_prompt,
+    company_extract_schema,
+    run_extract,
+)
 from .report_builder import build_company_report, write_report_files
 
 
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="airadar (company mode)")
     p.add_argument("--company", dest="company", help="Company name")
-    p.add_argument("--objective", dest="objective", help="Objective prompt for extraction")
-    p.add_argument("--max-urls", dest="max_urls", type=int, default=0, help="Max URLs to extract (overrides .env)")
+    p.add_argument(
+        "--objective", dest="objective", help="Objective prompt for extraction"
+    )
+    p.add_argument(
+        "--max-urls",
+        dest="max_urls",
+        type=int,
+        default=0,
+        help="Max URLs to extract (overrides .env)",
+    )
     return p
 
 
@@ -45,7 +57,11 @@ def main(argv: list[str] | None = None) -> int:
         print(str(e))
         return 2
 
-    max_urls = args.max_urls if args.max_urls and args.max_urls > 0 else settings.max_urls_for_extraction
+    max_urls = (
+        args.max_urls
+        if args.max_urls and args.max_urls > 0
+        else settings.max_urls_for_extraction
+    )
     max_urls = max(1, min(max_urls, 10))
 
     try:
@@ -59,14 +75,18 @@ def main(argv: list[str] | None = None) -> int:
 
     selected = None
     try:
-        decision = select_best_urls(objective, serp, settings=settings, max_urls=max_urls)
+        decision = select_best_urls(
+            objective, serp, settings=settings, max_urls=max_urls
+        )
         selected = decision.selected
     except DeepSeekInsufficientBalanceError:
-        print("DeepSeek balance insufficient (HTTP 402). Falling back to heuristic URL selection.")
-        selected = heuristic_select_urls(serp, max_urls=max_urls)
+        print(
+            "DeepSeek balance insufficient (HTTP 402). Falling back to heuristic URL selection."
+        )
+        selected = heuristic_select_urls(serp)
     except (InvalidModelJsonError, UpstreamApiError) as e:
         print(f"URL selection issue: {e}. Falling back to heuristic URL selection.")
-        selected = heuristic_select_urls(serp, max_urls=max_urls)
+        selected = heuristic_select_urls(serp)
 
     urls = [s.url for s in selected][:max_urls]
 
@@ -97,4 +117,3 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main(sys.argv[1:]))
-

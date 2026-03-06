@@ -1,0 +1,161 @@
+{
+  "meta": {
+    "generated_at": "2026-03-06T03:11:52+00:00",
+    "objective": "Extract headquarters, business units, core services, target industries, key executives, and recent strategic initiatives. Return structured JSON.",
+    "firecrawl_job_id": "019cc120-872b-7281-9150-65f742e7d017",
+    "invalid_urls": []
+  },
+  "company_identifiers": {
+    "name": "STC Group",
+    "headquarters": {
+      "value": "Riyadh, Saudi Arabia",
+      "evidence_ids": [
+        "E1"
+      ]
+    }
+  },
+  "business_snapshot": {
+    "business_units": [
+      {
+        "value": "Saudi Telecommunications Company (stc)",
+        "evidence_ids": [
+          "E1"
+        ]
+      },
+      {
+        "value": "Commercial Unit",
+        "evidence_ids": [
+          "E2"
+        ]
+      },
+      {
+        "value": "Business Unit",
+        "evidence_ids": [
+          "E2"
+        ]
+      },
+      {
+        "value": "Carriers and Wholesale Unit",
+        "evidence_ids": [
+          "E2"
+        ]
+      }
+    ],
+    "products_services": [
+      {
+        "value": "Digital infrastructure",
+        "evidence_ids": [
+          "E1"
+        ]
+      },
+      {
+        "value": "Cloud services",
+        "evidence_ids": [
+          "E1"
+        ]
+      },
+      {
+        "value": "Cybersecurity solutions",
+        "evidence_ids": [
+          "E1"
+        ]
+      },
+      {
+        "value": "Internet of Things (IoT) applications",
+        "evidence_ids": [
+          "E1"
+        ]
+      },
+      {
+        "value": "5G Network Services",
+        "evidence_ids": [
+          "E2"
+        ]
+      },
+      {
+        "value": "Cloud Services",
+        "evidence_ids": [
+          "E2"
+        ]
+      },
+      {
+        "value": "Digital Banking Services",
+        "evidence_ids": [
+          "E2"
+        ]
+      }
+    ],
+    "target_industries": [
+      {
+        "value": "Telecommunications",
+        "evidence_ids": [
+          "E1"
+        ]
+      },
+      {
+        "value": "Information and Communications Technology (ICT)",
+        "evidence_ids": [
+          "E1"
+        ]
+      },
+      {
+        "value": "Telecommunications",
+        "evidence_ids": [
+          "E2"
+        ]
+      },
+      {
+        "value": "Financial Services",
+        "evidence_ids": [
+          "E2"
+        ]
+      },
+      {
+        "value": "Cloud Computing",
+        "evidence_ids": [
+          "E2"
+        ]
+      }
+    ]
+  },
+  "leadership_signals": {
+    "executives": []
+  },
+  "strategic_initiatives": {
+    "initiatives": []
+  },
+  "evidence": [
+    {
+      "id": "E1",
+      "url": "https://www.stc.com/content/dam/groupsites/en/pdf/ExecutiveSummary-2024-en.pdf",
+      "title": "[PDF] from vision to value - stc group",
+      "snippet": "The Group has expanded its reach with over 18 subsidiaries throughout Saudi. Arabia, the MENA region and Europe, solidifying its position as a leader in the ICT ..."
+    },
+    {
+      "id": "E2",
+      "url": "https://www.stc.com/content/dam/groupsites/en/pdf/EarningsPresentationQ3-2025EnV2.pdf",
+      "title": "[PDF] Financial Results Presentation Q3 2025 - stc group",
+      "snippet": "- stc Group's revenue increased 3.58% YoY in. Q3-25, which was mainly attributed to the increase in commercial unit revenues by. 3.06%, business unit revenues ..."
+    },
+    {
+      "id": "E3",
+      "url": "https://besthost.stcerp.com/genviews?title=Mission_and_Values",
+      "title": "Mission and Values - bestHOST",
+      "snippet": "STC knows how to use technology and develop software that meets your requirements and satisfies your business needs developing exactly what you need. Employ ..."
+    }
+  ],
+  "selected_sources": [
+    {
+      "url": "https://www.stc.com/content/dam/groupsites/en/pdf/ExecutiveSummary-2024-en.pdf",
+      "why": "Top SERP result (heuristic fallback)."
+    },
+    {
+      "url": "https://www.stc.com/content/dam/groupsites/en/pdf/EarningsPresentationQ3-2025EnV2.pdf",
+      "why": "Top SERP result (heuristic fallback)."
+    },
+    {
+      "url": "https://besthost.stcerp.com/genviews?title=Mission_and_Values",
+      "why": "Top SERP result (heuristic fallback)."
+    }
+  ]
+}

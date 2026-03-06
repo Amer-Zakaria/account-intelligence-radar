@@ -5,16 +5,23 @@ from dataclasses import dataclass
 from typing import Any
 
 from .config import Settings
-from .errors import DeepSeekInsufficientBalanceError, InvalidModelJsonError, UpstreamApiError
+from .errors import (
+    DeepSeekInsufficientBalanceError,
+    InvalidModelJsonError,
+    UpstreamApiError,
+)
 from .models import SelectedUrl, SerpResult, unique_preserve_order
 
 
 DEEPSEEK_ENDPOINT = "https://api.deepseek.com/chat/completions"
 
 
-def heuristic_select_urls(serp_results: list[SerpResult], *, max_urls: int) -> list[SelectedUrl]:
-    picked = serp_results[: max(1, max_urls)]
-    return [SelectedUrl(url=r.url, why="Top SERP result (heuristic fallback).") for r in picked]
+def heuristic_select_urls(serp_results: list[SerpResult]) -> list[SelectedUrl]:
+    picked = serp_results[: max(1, 3)]
+    return [
+        SelectedUrl(url=r.url, why="Top SERP result (heuristic fallback).")
+        for r in picked
+    ]
 
 
 def _extract_first_json_object(text: str) -> str:
@@ -66,7 +73,9 @@ def select_best_urls(
     try:
         import requests  # type: ignore
     except ImportError as e:
-        raise UpstreamApiError("Missing dependency: requests. Install with: pip install -r requirements.txt") from e
+        raise UpstreamApiError(
+            "Missing dependency: requests. Install with: pip install -r requirements.txt"
+        ) from e
 
     candidates = [
         {
@@ -115,14 +124,23 @@ def select_best_urls(
     }
 
     try:
-        r = requests.post(DEEPSEEK_ENDPOINT, headers=headers, json=payload, timeout=settings.http_timeout_seconds)
+        r = requests.post(
+            DEEPSEEK_ENDPOINT,
+            headers=headers,
+            json=payload,
+            timeout=settings.http_timeout_seconds,
+        )
     except requests.RequestException as e:
         raise UpstreamApiError("DeepSeek request failed.") from e
 
     if r.status_code == 402:
-        raise DeepSeekInsufficientBalanceError("DeepSeek returned HTTP 402 (insufficient balance).", status_code=402)
+        raise DeepSeekInsufficientBalanceError(
+            "DeepSeek returned HTTP 402 (insufficient balance).", status_code=402
+        )
     if r.status_code >= 400:
-        raise UpstreamApiError(f"DeepSeek returned HTTP {r.status_code}.", status_code=r.status_code)
+        raise UpstreamApiError(
+            f"DeepSeek returned HTTP {r.status_code}.", status_code=r.status_code
+        )
 
     try:
         resp = r.json()
@@ -132,13 +150,17 @@ def select_best_urls(
     try:
         content = resp["choices"][0]["message"]["content"]
     except Exception as e:
-        raise UpstreamApiError("DeepSeek response missing choices/message/content.") from e
+        raise UpstreamApiError(
+            "DeepSeek response missing choices/message/content."
+        ) from e
 
     try:
         extracted = _extract_first_json_object(content)
         parsed: Any = json.loads(extracted)
     except (InvalidModelJsonError, json.JSONDecodeError) as e:
-        raise InvalidModelJsonError("Model returned invalid JSON for URL selection.") from e
+        raise InvalidModelJsonError(
+            "Model returned invalid JSON for URL selection."
+        ) from e
 
     selected_raw = parsed.get("selected") if isinstance(parsed, dict) else None
     if not isinstance(selected_raw, list):
@@ -155,14 +177,17 @@ def select_best_urls(
             continue
         if "linkedin.com" in url.lower():
             continue
-        selected.append(SelectedUrl(url=url, why=why or "Selected for relevance to the objective."))
+        selected.append(
+            SelectedUrl(url=url, why=why or "Selected for relevance to the objective.")
+        )
 
     # Ensure unique and capped
     uniq_urls = unique_preserve_order([s.url for s in selected])
-    selected = [next(s for s in selected if s.url == u) for u in uniq_urls][: max(1, max_urls)]
+    selected = [next(s for s in selected if s.url == u) for u in uniq_urls][
+        : max(1, max_urls)
+    ]
 
     if not selected:
-        selected = heuristic_select_urls(serp_results, max_urls=max_urls)
+        selected = heuristic_select_urls(serp_results)
 
     return DecisionResult(selected=selected, raw_model_text=content)
-
